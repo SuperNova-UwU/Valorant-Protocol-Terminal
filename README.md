@@ -79,24 +79,4 @@ A high-fidelity, interactive Valorant-themed web application built with authenti
 
 ---
 
-## 🌐 Deployment & Hosting Guide
 
-This project is built with standard relative asset paths and zero build steps, making it **100% plug-and-play** on any static web host.
-
-### Option 1: GitHub Pages (Recommended for Portfolio)
-1. Push this repository to GitHub.
-2. In your repository, go to **Settings** > **Pages**.
-3. Under **Branch**, select `main` (or `master`) and folder `/ (root)`.
-4. Click **Save**. Your site will be live at `https://<your-username>.github.io/<repo-name>/`.
-
-### Option 2: Vercel / Netlify
-1. Connect your GitHub repository to Vercel or Netlify.
-2. Leave the build command empty (`Output directory: .`).
-3. Deploy! Instant global CDN hosting with HTTPS and custom domain support.
-
-### Option 3: Local Development
-Double-click `index.html` or run the included PowerShell streaming server:
-```powershell
-powershell -File server.ps1
-```
-Open `http://localhost:5500` in your browser.
