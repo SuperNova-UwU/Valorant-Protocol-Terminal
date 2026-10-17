@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="High-performance interactive Valorant tactical web experience featuring 2D Lineup Lab, 29-operative dossier viewer, Champions theme engine, Spike simulator, and economy calculator.">
+  <meta name="theme-color" content="#FF4655">
+
+  <!-- Open Graph / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="VALORANT // Protocol Terminal - Tactical Web Experience">
+  <meta property="og:description" content="Interactive tactical web app with multi-site Lineup Lab, complete 29-agent dossiers, Champions anthem audio engine, and Spike simulator.">
+  <meta property="og:image" content="assets/jett-portrait.png">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VALORANT // Protocol Terminal">
+  <meta name="twitter:description" content="High-performance interactive tactical Valorant dashboard built with vanilla JavaScript, HTML5 Audio, and Canvas.">
+  <meta name="twitter:image" content="assets/jett-portrait.png">
+
+  <title>VALORANT // Protocol Terminal - Agents, Champions & Dev Diaries</title>
+  <link rel="icon" type="image/svg+xml" href="assets/valorant-logo.svg">
+  <link rel="stylesheet" href="css/lenis.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Radianite Particle Canvas -->
+  <canvas id="radianite-canvas"></canvas>
+
+  <!-- ==========================================================================
+       TACTICAL TOP NAVBAR (ORIGINAL VALORANT ICON & CHAMPIONS STATUS)
+       ========================================================================== -->
+  <header class="tactical-navbar">
+    <div class="nav-brand-group">
+      <a href="#home" class="val-brand-logo">
+        <div class="val-original-logo-wrap" title="Valorant Official Protocol">
+          <!-- ORIGINAL AUTHENTIC VALORANT ICON -->
+          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <title>Valorant</title>
+            <path d="M23.792 2.152a.252.252 0 0 0-.098.083c-3.384 4.23-6.769 8.46-10.15 12.69-.107.093-.025.288.119.265 2.439.003 4.877 0 7.316.001a.66.66 0 0 0 .552-.25c.774-.967 1.55-1.934 2.324-2.903a.72.72 0 0 0 .144-.49c-.002-3.077 0-6.153-.003-9.23.016-.11-.1-.206-.204-.167zM.077 2.166c-.077.038-.074.132-.076.205.002 3.074.001 6.15.001 9.225a.679.679 0 0 0 .158.463l7.64 9.55c.12.152.308.25.505.247 2.455 0 4.91.003 7.365 0 .142.02.222-.174.116-.265C10.661 15.176 5.526 8.766.4 2.35c-.08-.094-.174-.272-.322-.184z"/>
+          </svg>
+        </div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">VALORANT</span>
+          <span class="brand-sub">PROTOCOL // NETWORK</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Main Navigation Links -->
+    <nav>
+      <ul class="nav-links-menu">
+        <li><a href="#home" class="tactical-nav-link active"><span class="nav-num">01</span> // HOME</a></li>
+        <li><a href="#agents" class="tactical-nav-link"><span class="nav-num">02</span> // AGENTS</a></li>
+        <li><a href="#lineup-lab" class="tactical-nav-link"><span class="nav-num">03</span> // LINEUP LAB</a></li>
+        <li><a href="#economy-sim" class="tactical-nav-link"><span class="nav-num">04</span> // ECONOMY</a></li>
+        <li><a href="#champions" class="tactical-nav-link"><span class="nav-num">05</span> // CHAMPIONS</a></li>
+        <li><a href="#dev-diaries" class="tactical-nav-link"><span class="nav-num">06</span> // DEV DIARIES</a></li>
+        <li><a href="#contact" class="tactical-nav-link"><span class="nav-num">07</span> // TRANSMISSION</a></li>
+      </ul>
+    </nav>
+
+    <!-- Tactical HUD Controls -->
+    <div class="nav-hud-controls">
+      <!-- Interactive Server Region Selector Dropdown -->
+      <div class="server-selector-wrap" id="server-selector-wrap">
+        <button type="button" class="server-ping-badge server-selector-btn" id="server-selector-btn" title="Select Riot Telemetry Routing Node" aria-expanded="false" aria-haspopup="true">
+          <span class="ping-pulse" id="server-ping-dot"></span>
+          <span class="server-current-label" id="server-current-label">SEOUL // 14ms</span>
+          <svg class="server-dropdown-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        <div class="server-dropdown-menu" id="server-dropdown-menu" role="menu">
+          <div class="server-dropdown-header">
+            <span class="server-dropdown-tag">// RIOT TELEMETRY</span>
+            <span class="server-dropdown-title">GLOBAL ROUTING NODES</span>
+          </div>
+          <div class="server-nodes-list" id="server-nodes-list">
+            <!-- Populated dynamically by hero-interactive.js -->
+          </div>
+        </div>
+      </div>
+
+      <button id="tactical-audio-toggle" class="audio-toggle-btn" title="Toggle Procedural Tactical Audio">
+        <span class="audio-icon">
+          <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </span>
+        <span class="audio-label">AUDIO: ON</span>
+      </button>
+
+      <!-- Mobile Hamburger Toggle Button -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle Navigation Drawer" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MOBILE & TABLET NAVIGATION DRAWER
+       ========================================================================== -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
+    <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer-panel">
+      <div class="drawer-header">
+        <div class="drawer-brand">
+          <span class="drawer-tag">// TACTICAL NAVIGATION</span>
+          <span class="drawer-title">VALORANT PROTOCOL</span>
+        </div>
+        <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Navigation Drawer">✕</button>
+      </div>
+
+      <ul class="mobile-nav-links">
+        <li><a href="#home" class="mobile-nav-link active"><span class="nav-num">01</span> // HOME</a></li>
+        <li><a href="#agents" class="mobile-nav-link"><span class="nav-num">02</span> // AGENTS</a></li>
+        <li><a href="#lineup-lab" class="mobile-nav-link"><span class="nav-num">03</span> // LINEUP LAB</a></li>
+        <li><a href="#economy-sim" class="mobile-nav-link"><span class="nav-num">04</span> // ECONOMY</a></li>
+        <li><a href="#champions" class="mobile-nav-link"><span class="nav-num">05</span> // CHAMPIONS</a></li>
+        <li><a href="#dev-diaries" class="mobile-nav-link"><span class="nav-num">06</span> // DEV DIARIES</a></li>
+        <li><a href="#contact" class="mobile-nav-link"><span class="nav-num">07</span> // TRANSMISSION</a></li>
+      </ul>
+
+      <div class="mobile-drawer-footer">
+        <div class="drawer-telemetry-badge">
+          <span class="drawer-dot"></span>
+          <span id="drawer-server-text">ACTIVE NODE: SEOUL // 14ms</span>
+        </div>
+        <button id="mobile-drawer-audio-toggle" class="mobile-drawer-audio-btn">
+          <span>AUDIO: ON</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SMOOTH-SCROLLING WRAPPER (GSAP + LENIS ARCHITECTURE)
+       ========================================================================== -->
+  <div id="smooth-wrapper" class="smooth-scroll-wrapper">
+    <div id="smooth-content" class="smooth-scroll-content">
+
+      <!-- ==========================================================================
+           MAIN CONTENT FLOW
+           ========================================================================== -->
+      <main class="main-content-flow">
+
+    <!-- ========================================================================
+         SECTION 1: HOME // HERO SECTION
+         ======================================================================== -->
+    <section id="home" class="val-section hero-section">
+      <div class="hero-grid">
+        
+        <!-- Left Hero Content -->
+        <div class="hero-content">
+          <div class="hero-kicker-tag">
+            <span class="kicker-dot"></span>
+            <span>TACTICAL 5V5 CHARACTER-BASED RADIANITE SHOOTER</span>
+          </div>
+
+          <h1 class="hero-main-title">
+            DEFY THE <br><span class="radiant-text">LIMITS.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Blend tactical gunplay with adaptive radiant abilities. Choose your operative, strategize round economy, and plant or defuse the Spike across high-stakes global battlegrounds.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#agents" class="tactical-btn">
+              <span>EXPLORE AGENT ROSTER</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#champions" class="tactical-btn tactical-btn-outline">
+              <span>CHAMPIONS ANTHEMS</span>
+            </a>
+          </div>
+
+          <!-- Hero Metrics -->
+          <div class="hero-intel-specs">
+            <div class="spec-box">
+              <span class="spec-num">29</span>
+              <span class="spec-label">ACTIVE OPERATIVES</span>
+            </div>
+            <div class="spec-box">
+              <span class="spec-num">128</span>
+              <span class="spec-label">HZ TICK SERVERS</span>
+            </div>
+            <div class="spec-box">
+              <span class="spec-num">v9.08</span>
+              <span class="spec-label">CURRENT PROTOCOL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero HUD Column -->
+        <div class="hero-hud-column">
+
+          <!-- Interactive Spike Simulator Card -->
+          <div class="spike-hud-card">
+            <div class="card-tactical-header">
+              <span>// SPIKE TRANSMISSION SIMULATOR</span>
+              <span class="spike-state-badge">SITE A // SECURE</span>
+            </div>
+
+            <div class="spike-sim-body">
+              <div class="spike-display-row">
+                <div class="spike-timer-large" id="spike-timer-display">45.00s</div>
+                <div class="spike-state-label spike-state-idle" id="spike-status-text">SPIKE READY // SITE UNCONTESTED</div>
+              </div>
+
+              <!-- Progress bar -->
+              <div class="spike-progress-track">
+                <div class="spike-progress-fill" id="spike-sim-progress"></div>
+              </div>
+
+              <div class="spike-actions-row">
+                <button id="spike-action-btn" class="tactical-btn btn-plant">
+                  <span>PLANT SPIKE</span>
+                </button>
+                <button id="spike-reset-btn" class="tactical-btn tactical-btn-outline" style="flex: 0 0 90px;">
+                  <span>RESET</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map Rotation Showcase Card -->
+          <div class="map-rotation-card">
+            <div class="card-tactical-header">
+              <span>// ACTIVE COMPETITIVE MAP ROTATION</span>
+              <span style="color: var(--val-cyan); font-family: var(--font-mono); font-size: 11px;">SPLIT & PEARL LIVE</span>
+            </div>
+
+            <div class="active-map-preview">
+              <img src="assets/map-split.png" alt="Split Map" onerror="this.src='assets/map-ascent.png'">
+              <div class="map-overlay-info">
+                <h4>SPLIT // TOKYO</h4>
+                <span>TWO SITES // ELEVATED CHOKEPOINTS</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 2: AGENTS // COMPREHENSIVE ROSTER
+         ======================================================================== -->
+    <section id="agents" class="val-section agents-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// PROTOCOL ROSTER</span>
+        <h2 class="section-title">AGENTS DIRECTORY</h2>
+        <p class="section-desc-lead">
+          Every playable Valorant agent categorized by combat role. Inspect tactical abilities, signature keybinds, background dossiers, and battlefield metrics.
+        </p>
+      </div>
+
+      <!-- Filter & Search Toolbar -->
+      <div class="agents-filter-bar">
+        <!-- Role Buttons -->
+        <div class="role-buttons-group">
+          <button class="role-filter-btn active" data-role="ALL">ALL OPERATIVES</button>
+          <button class="role-filter-btn" data-role="DUELIST">
+            <img src="assets/role-duelist.png" alt="Duelist" class="role-icon-sm">
+            <span>DUELISTS</span>
+          </button>
+          <button class="role-filter-btn" data-role="INITIATOR">
+            <img src="assets/role-initiator.png" alt="Initiator" class="role-icon-sm">
+            <span>INITIATORS</span>
+          </button>
+          <button class="role-filter-btn" data-role="SENTINEL">
+            <img src="assets/role-sentinel.png" alt="Sentinel" class="role-icon-sm">
+            <span>SENTINELS</span>
+          </button>
+          <button class="role-filter-btn" data-role="CONTROLLER">
+            <img src="assets/role-controller.png" alt="Controller" class="role-icon-sm">
+            <span>CONTROLLERS</span>
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="agent-search-box">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="agent-search-input" class="agent-search-input" placeholder="Search callsign or ability..." autocomplete="off">
+          <button id="agent-search-clear" class="search-clear-btn" title="Clear Search">✕</button>
+        </div>
+      </div>
+
+      <!-- Mobile & Tablet Quick Agent Selector Dropdown (Avoids endless 26-card scrolling) -->
+      <div class="mobile-agent-selector-wrapper" id="mobile-agent-selector-wrapper">
+        <div class="mobile-agent-header">
+          <span class="mobile-agent-kicker">// TACTICAL OPERATIVE SELECTOR</span>
+          <span class="mobile-agent-subtitle">SELECT ANY AGENT FOR INSTANT CLASSIFIED DOSSIER</span>
+        </div>
+        <div class="mobile-agent-dropdown-box">
+          <div class="mobile-agent-select-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
+          </div>
+          <select id="mobile-agent-dropdown" class="mobile-agent-select" aria-label="Select Agent to inspect dossier">
+            <option value="">-- CHOOSE AGENT TO INSPECT (26 OPERATIVES) --</option>
+          </select>
+          <div class="mobile-agent-arrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Count Status -->
+      <div class="agents-meta-bar">
+        <span id="agents-count-badge" class="agents-count-pill">LOADING OPERATIVES...</span>
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--val-muted);">CLICK OPERATIVE FOR IN-DEPTH DOSSIER</span>
+      </div>
+
+      <!-- Dynamic Agents Grid -->
+      <div id="agents-grid" class="agents-grid">
+        <!-- Rendered by js/agents.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 3: TACTICAL MINIMAP & LINEUP LAB
+         ======================================================================== -->
+    <section id="lineup-lab" class="val-section lineup-lab-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// TACTICAL SATELLITE RADAR & EXECUTIONS</span>
+        <h2 class="section-title">MINIMAP & LINEUP LAB</h2>
+        <p class="section-desc-lead">
+          Interactive top-down satellite radar, ballistic trajectory simulations, crosshair lineup guides, and tactical team execution board across competitive maps.
+        </p>
+      </div>
+
+      <!-- Dynamic Minimap & Lineup Lab Workspace -->
+      <div id="lineup-lab-content">
+        <!-- Rendered by js/minimap-lab.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 4: TACTICAL ECONOMY & BUY CALCULATOR
+         ======================================================================== -->
+    <section id="economy-sim" class="val-section economy-sim-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// COMPETITIVE SCRIM & ROUND ECONOMICS</span>
+        <h2 class="section-title">ECONOMY & BUY CALCULATOR</h2>
+        <p class="section-desc-lead">
+          Real-time Valorant buy-phase store, 5-man team roster bankroll management, loss bonus streak tracker, and round-to-round economy forecasting to guarantee Full Buy rounds.
+        </p>
+      </div>
+
+      <!-- Dynamic Economy Workspace -->
+      <div id="economy-sim-content">
+        <!-- Rendered by js/economy-sim.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 5: VALORANT CHAMPIONS HUB (2021 - PRESENT)
+         ======================================================================== -->
+    <section id="champions" class="val-section champions-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// WORLD CHAMPIONSHIP ARCHIVES (2021 - PRESENT)</span>
+        <h2 class="section-title">VALORANT CHAMPIONS</h2>
+        <p class="section-desc-lead">
+          Relive every world championship era. Click any tournament year below to immediately transform the entire website's visual theme and tactical HUD, while streaming the official Champions anthem in the background.
+        </p>
+      </div>
+
+      <!-- Year Selector Navigation Chips -->
+      <div class="champions-year-nav" id="champions-year-nav">
+        <!-- Rendered by js/champions.js -->
+      </div>
+
+      <!-- Dynamic Champions Year Showcase Box -->
+      <div id="champions-hub-content">
+        <!-- Rendered by js/champions.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 4: DEV DIARIES // PATCH LOGS & FUTURE ROADMAP
+         ======================================================================== -->
+    <section id="dev-diaries" class="val-section dev-diaries-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// RADIANT INTELLIGENCE & ENGINEERING</span>
+        <h2 class="section-title">DEV DIARIES</h2>
+        <p class="section-desc-lead">
+          Inside look into Valorant balance operations, map pool rotations, engine architecture, and future development roadmaps.
+        </p>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="dev-nav-tabs-bar">
+        <button class="diary-nav-tab active" data-diary-tab="current">CURRENT PATCH (v9.08)</button>
+        <button class="diary-nav-tab" data-diary-tab="roadmap">UPCOMING ROADMAP (EPISODE 10)</button>
+        <button class="diary-nav-tab" data-diary-tab="archive">PATCH ARCHIVES</button>
+        <button class="diary-nav-tab" data-diary-tab="articles">TECH & ARCHITECTURE ESSAYS</button>
+      </div>
+
+      <!-- Dynamic Content Area -->
+      <div id="dev-diaries-content">
+        <!-- Rendered by js/dev-diaries.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 7: CONTACT US // TACTICAL TRANSMISSION
+         ======================================================================== -->
+    <section id="contact" class="val-section contact-section">
+      <div class="section-header-block">
+        <span class="section-tagline">// COMM TRANSMISSION // RADIANITE SECURE LINK</span>
+        <h2 class="section-title">CONTACT PROTOCOL</h2>
+        <p class="section-desc-lead">
+          Dispatch classified reports, agent balance recommendations, Vanguard bug traces, or tournament scrimmage inquiries directly to Valorant Headquarters.
+        </p>
+      </div>
+
+      <div class="transmission-grid">
+
+        <!-- Form Terminal -->
+        <div class="transmission-terminal-card">
+          <form id="tactical-transmission-form">
+
+            <div class="form-group-row">
+              <div>
+                <label class="tactical-label" for="sender-callsign">
+                  <span>CALLSIGN / RIOT ID</span>
+                  <button type="button" id="gen-callsign-btn" class="label-action-btn">GENERATE CALLSIGN</button>
+                </label>
+                <input type="text" id="sender-callsign" class="tactical-input" placeholder="e.g. VIPER#TOKYO" required>
+              </div>
+
+              <div>
+                <label class="tactical-label" for="sender-email">
+                  <span>SECURE CHANNEL (EMAIL)</span>
+                </label>
+                <input type="email" id="sender-email" class="tactical-input" placeholder="agent@radianite.net" required>
+              </div>
+            </div>
+
+            <div class="form-group-single">
+              <label class="tactical-label" for="transmission-category">
+                <span>DISPATCH CLASSIFICATION</span>
+              </label>
+              <select id="transmission-category" class="tactical-select">
+                <option value="AGENT BALANCE">AGENT BALANCING PROPOSAL (BUFF/NERF)</option>
+                <option value="BUG EXPLOIT">VANGUARD / CLIENT BUG DISPATCH</option>
+                <option value="MAP TELEMETRY">MAP SIGHTLINE & ARCHITECTURAL FEEDBACK</option>
+                <option value="ESPORTS SCRIM">PREMIER & TOURNAMENT SCRIM INQUIRY</option>
+                <option value="GENERAL">GENERAL PROTOCOL CORRESPONDENCE</option>
+              </select>
+            </div>
+
+            <div class="form-group-single">
+              <label class="tactical-label">
+                <span>SECURITY CLEARANCE PRIORITY</span>
+              </label>
+              <div class="priority-options-row">
+                <label class="priority-radio-label">
+                  <input type="radio" name="priority" value="STANDARD" checked>
+                  <span>STANDARD</span>
+                </label>
+                <label class="priority-radio-label">
+                  <input type="radio" name="priority" value="HIGH">
+                  <span>HIGH PRIORITY</span>
+                </label>
+                <label class="priority-radio-label">
+                  <input type="radio" name="priority" value="OMEGA">
+                  <span style="color: var(--val-red);">OMEGA RADIANITE</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group-single">
+              <label class="tactical-label" for="transmission-body">
+                <span>ENCRYPTED MESSAGE TERMINAL</span>
+              </label>
+              <textarea id="transmission-body" class="tactical-textarea" placeholder="Input encrypted packet data, telemetry coordinates, or combat logs..." required></textarea>
+            </div>
+
+            <!-- Terminal log status output -->
+            <div class="terminal-feed-card" id="terminal-log-feed">
+              <div class="log-line">> VALORANT PROTOCOL SECURE ENCRYPTION READY.</div>
+              <div class="log-line">> 256-BIT RADIANITE CIPHER STANDBY.</div>
+            </div>
+
+            <button type="submit" id="transmission-submit-btn" class="tactical-btn" style="width: 100%;">
+              <span id="submit-btn-text">TRANSMIT FIELD DISPATCH</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+
+          </form>
+
+          <!-- Verified Receipt Output -->
+          <div id="transmission-receipt" class="transmission-receipt-container"></div>
+        </div>
+
+        <!-- Right Column: Node Ping Monitor & Community -->
+        <div class="contact-telemetry-col">
+
+          <div class="telemetry-node-card">
+            <div class="card-tactical-header">
+              <span>// GLOBAL SERVER NODES</span>
+              <button id="run-ping-test-btn" class="label-action-btn">REFRESH PING</button>
+            </div>
+
+            <div class="node-list-grid">
+              <div class="node-item">
+                <span class="node-name">TOKYO-1 (AP)</span>
+                <span class="node-ping" id="ping-tokyo">14 ms</span>
+              </div>
+              <div class="node-item">
+                <span class="node-name">FRANKFURT-2 (EU)</span>
+                <span class="node-ping" id="ping-frankfurt">22 ms</span>
+              </div>
+              <div class="node-item">
+                <span class="node-name">VIRGINIA (NA)</span>
+                <span class="node-ping" id="ping-virginia">18 ms</span>
+              </div>
+              <div class="node-item">
+                <span class="node-name">MUMBAI-1 (IN)</span>
+                <span class="node-ping" id="ping-mumbai">11 ms</span>
+              </div>
+            </div>
+
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--val-muted); line-height: 1.5;">
+              VANGUARD KERNEL STATUS: <span style="color: var(--val-green);">OPERATIONAL</span><br>
+              ANTI-CHEAT SYSTEM INTEGRITY: <span style="color: var(--val-green);">100% SECURE</span>
+            </div>
+          </div>
+
+          <div class="telemetry-node-card">
+            <div class="card-tactical-header">
+              <span>// OFFICIAL RIOT CHANNELS</span>
+            </div>
+
+            <div class="social-links-grid">
+              <a href="https://discord.com/invite/valorant" target="_blank" rel="noopener noreferrer" class="social-card-btn">
+                <span>DISCORD COMM</span>
+              </a>
+              <a href="https://twitter.com/valorant" target="_blank" rel="noopener noreferrer" class="social-card-btn">
+                <span>TWITTER / X</span>
+              </a>
+              <a href="https://twitch.tv/valorant" target="_blank" rel="noopener noreferrer" class="social-card-btn">
+                <span>TWITCH ESPORTS</span>
+              </a>
+              <a href="https://support-valorant.riotgames.com" target="_blank" rel="noopener noreferrer" class="social-card-btn">
+                <span>RIOT SUPPORT</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+      </main>
+
+      <!-- ==========================================================================
+           FOOTER
+           ========================================================================== -->
+      <footer class="val-site-footer">
+        <div class="footer-inner">
+          <div class="footer-disclaimer">
+            <p>VALORANT PROTOCOL // FAN PROJECT & INTERACTIVE EXPERIENCE</p>
+            <p>Valorant, Champions, and all associated assets, artwork, and music are trademarks and property of Riot Games, Inc.</p>
+          </div>
+
+          <button class="footer-top-btn" onclick="if(window.lenis){window.lenis.scrollTo(0, {duration: 1.4});}else{window.scrollTo({ top: 0, behavior: 'smooth' });}">
+            ▲ RETURN TO PROTOCOL APEX
+          </button>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       AGENT DOSSIER MODAL (FULL SCREEN POPUP)
+       ========================================================================== -->
+  <div id="agent-dossier-modal" class="agent-dossier-modal" data-lenis-prevent></div>
+
+  <!-- ==========================================================================
+       CORE 3D & MOTION ENGINES (THREE, GSAP, SCROLLTRIGGER, LENIS)
+       ========================================================================== -->
+  <script src="js/vendor/three.min.js"></script>
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/ScrollTrigger.min.js"></script>
+  <script src="js/vendor/lenis.min.js"></script>
+  <script src="js/smooth-scroll.js"></script>
+
+  <!-- ==========================================================================
+       VALORANT DATA & APPLICATION SCRIPTS
+       ========================================================================== -->
+  <script src="js/agents-data.js"></script>
+  <script src="js/champions-data.js"></script>
+  <script src="js/lineup-data.js"></script>
+  <script src="js/economy-data.js"></script>
+  <script src="js/dev-diaries-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/champions.js"></script>
+  <script src="js/agents.js"></script>
+  <script src="js/minimap-lab.js"></script>
+  <script src="js/economy-sim.js"></script>
+  <script src="js/dev-diaries.js"></script>
+  <script src="js/contact.js"></script>
+  <script src="js/hero-interactive.js"></script>
+
+</body>
+</html>

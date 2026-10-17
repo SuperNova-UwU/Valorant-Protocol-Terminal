@@ -1,0 +1,27 @@
+{
+  "name": "valorant-interactive-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VALORANT Protocol Interactive Experience - Tactical Military Web Architecture",
+  "type": "module",
+  "scripts": {
+    "start": "powershell -ExecutionPolicy Bypass -File server.ps1"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.105.6",
+    "@react-three/fiber": "^8.16.8",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.18",
+    "three": "^0.164.1"
+  },
+  "keywords": [
+    "valorant",
+    "tactical",
+    "threejs",
+    "gsap",
+    "lenis",
+    "smooth-scroll"
+  ],
+  "author": "Protocol Engineering",
+  "license": "ISC"
+}
